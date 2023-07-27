@@ -127,7 +127,6 @@ def main():
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     timestamp = int(time.time())
     send_message(bot, 'Начало работы Бота')
-    request = get_api_answer(timestamp)
     initial_answer = ''
     logging.info('Запрос API прошел проверку.')
 
