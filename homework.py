@@ -128,7 +128,7 @@ def main():
     timestamp = int(time.time())
     send_message(bot, 'Начало работы Бота')
     request = get_api_answer(timestamp)
-    initial_answer = check_response(request)
+    initial_answer = ''
     logging.info('Запрос API прошел проверку.')
 
     while True:
@@ -137,11 +137,12 @@ def main():
             verified_answer = check_response(request_new)
             if len(verified_answer) == 0:
                 logging.info('Нет активной работы.')
+                break
             if verified_answer != initial_answer:
-                homework = verified_answer[0]
-                getting_answer = parse_status([homework['homeworks']])
-                send_message(bot, getting_answer)
-                logging.info(f'Отправлен новый статус: {getting_answer}')
+                getting_answer = parse_status(verified_answer['homeworks'][0])
+                    send_message(bot, getting_answer)
+                    logging.info(f'Отправлен новый статус: {getting_answer}')
+                    initial_answer = verified_answer
             else:
                 logging.info('Статус не обновлен.')
         except Exception as error:
