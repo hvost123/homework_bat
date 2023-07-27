@@ -137,9 +137,9 @@ def main():
             verified_answer = check_response(request_new)
             if len(verified_answer) == 0:
                 logging.info('Нет активной работы.')
-                break
             if verified_answer != initial_answer:
-                getting_answer = parse_status(verified_answer['homeworks'])
+                homework = verified_answer[0]
+                getting_answer = parse_status([homework['homeworks']])
                 send_message(bot, getting_answer)
                 logging.info(f'Отправлен новый статус: {getting_answer}')
             else:
