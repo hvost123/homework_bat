@@ -34,9 +34,12 @@ def check_tokens():
         test_con = all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
         if test_con:
             return test_con
+        else:
+            logging.critical(message_error)
+            exit(message_error)
     except Exception:
         logging.critical(message_error)
-        sys.exit(message_error)
+
 
 
 def send_message(bot, message):
