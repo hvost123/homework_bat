@@ -41,7 +41,6 @@ def check_tokens():
         logging.critical(message_error)
 
 
-
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
     message_send = 'Удачная отправка сообщения в Telegram.'
