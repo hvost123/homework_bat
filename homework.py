@@ -135,8 +135,11 @@ def main():
         try:
             request_new = get_api_answer(timestamp)
             verified_answer = check_response(request_new)
+            if len(verified_answer) == 0:
+                logging.info('Нет активной работы.')
+                break
             if verified_answer != initial_answer:
-                getting_answer = parse_status(verified_answer['homeworks'][0])
+                getting_answer = parse_status(verified_answer['homeworks'])
                 send_message(bot, getting_answer)
                 logging.info(f'Отправлен новый статус: {getting_answer}')
             else:
