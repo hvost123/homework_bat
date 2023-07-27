@@ -36,7 +36,7 @@ def check_tokens():
             return test_con
     except Exception:
         logging.critical(message_error)
-        raise EnvironmentError(message_error)
+        sys.exit(message_error)
 
 
 def send_message(bot, message):
@@ -85,24 +85,31 @@ def check_response(response):
 
     if not isinstance(response, dict):
         logging.error(error_type_api)
-        raise exceptions.TypeApiError(error_type_api)
+        raise TypeError(error_type_api)
     if 'homeworks' not in response or 'current_date' not in response:
         logging.error(empty_answer_apy)
-        raise exceptions.ValueApiError(empty_answer_apy)
+        raise TypeError(empty_answer_apy)
     if not isinstance(response['homeworks'], list):
         logging.error(no_list)
-        raise exceptions.TypeNotList(no_list)
+        raise TypeError(no_list)
     if not isinstance(response['current_date'], int):
         logging.error(no_int)
-        raise exceptions.TypeNotInt(no_int)
+        raise TypeError(no_int)
     return response
 
 
 def parse_status(homework):
     """Извлекает из информации статус этой работы."""
+    if 'homework_name' not in homework:
+        logging.error('Нет homework_name в homework.')
+        raise exceptions.NotHomeworkName('Нет homework_name в homework.')
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
-    verdict = HOMEWORK_VERDICTS[homework_status]
+    try:
+        verdict = HOMEWORK_VERDICTS[homework_status]
+    except Exception:
+        logging.error('Недокументированный статус домашней работы.')
+        raise exceptions.StatusError('Ошибочный статус.')
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
