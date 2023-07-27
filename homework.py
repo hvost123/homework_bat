@@ -140,9 +140,9 @@ def main():
                 break
             if verified_answer != initial_answer:
                 getting_answer = parse_status(verified_answer['homeworks'][0])
-                    send_message(bot, getting_answer)
-                    logging.info(f'Отправлен новый статус: {getting_answer}')
-                    initial_answer = verified_answer
+                send_message(bot, getting_answer)
+                logging.info(f'Отправлен новый статус: {getting_answer}')
+                initial_answer = verified_answer
             else:
                 logging.info('Статус не обновлен.')
         except Exception as error:
