@@ -1,23 +1,32 @@
 import logging
+import os
 import sys
 import time
+from dotenv import load_dotenv
 from http import HTTPStatus
 
 import requests
 import telegram
 
 import exceptions
-import tokens
+
+load_dotenv()
+
+
+PRACTICUM_TOKEN = os.getenv('PRACTICUM_TOKEN')
+TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
+TELEGRAM_CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+
 
 RETRY_PERIOD = 600
 ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
-HEADERS = {'Authorization': f'OAuth {tokens.PRACTICUM_TOKEN}'}
+HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
 
-HOMEWORK_VERDICTS = {
-    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
-    'reviewing': 'Работа взята на проверку ревьюером.',
-    'rejected': 'Работа проверена: у ревьюера есть замечания.'
+HOMEWORK_VERDICTS = { 
+    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!', 
+    'reviewing': 'Работа взята на проверку ревьюером.', 
+    'rejected': 'Работа проверена: у ревьюера есть замечания.' 
 }
 
 
@@ -25,9 +34,9 @@ def check_tokens():
     """Проверяет доступность переменных окружения."""
     message_error = 'Отсутствие обязательных переменных окружения.'
     test_constant = all([
-        tokens.PRACTICUM_TOKEN,
-        tokens.TELEGRAM_TOKEN,
-        tokens.TELEGRAM_CHAT_ID
+        PRACTICUM_TOKEN,
+        TELEGRAM_TOKEN,
+        TELEGRAM_CHAT_ID
     ])
     if not test_constant:
         logging.critical(message_error)
@@ -40,7 +49,7 @@ def send_message(bot, message):
     message_error = 'Cбой при отправке сообщения в Telegram.'
     try:
         bot.send_message(
-            chat_id=tokens.TELEGRAM_CHAT_ID,
+            chat_id=TELEGRAM_CHAT_ID,
             text=message,
         )
     except telegram.TelegramError:
@@ -116,7 +125,7 @@ def main():
     )
     logging.info('Начало работы Бота')
     check_tokens()
-    bot = telegram.Bot(token=tokens.TELEGRAM_TOKEN)
+    bot = telegram.Bot(token=TELEGRAM_TOKEN)
     timestamp = int(time.time())
     send_message(bot, 'Начало работы Бота')
     initial_answer = ''
