@@ -16,12 +16,6 @@ class MainError(Exception):
     pass
 
 
-class StatusError(Exception):
-    """Недокументированный статус домашней работы либо домашку без статуса."""
-
-    pass
-
-
 class NotHomeworkName(Exception):
     """Нет homework_name в homework."""
 

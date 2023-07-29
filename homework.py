@@ -108,11 +108,11 @@ def parse_status(homework):
         raise exceptions.NotHomeworkName('Нет homework_name в homework.')
     homework_name = homework.get('homework_name')
     homework_status = homework.get('status')
-    try:
-        verdict = HOMEWORK_VERDICTS[homework_status]
-    except KeyError:
-        logging.error('Недокументированный статус домашней работы.')
-        raise exceptions.StatusError('Ошибочный статус.')
+    if homework_status not in HOMEWORK_VERDICTS:
+        massage_error = 'Недокументированный статус домашней работы.'
+        logging.error(massage_error)
+        raise KeyError(massage_error)
+    verdict = HOMEWORK_VERDICTS[homework_status]
     return f'Изменился статус проверки работы "{homework_name}". {verdict}'
 
 
