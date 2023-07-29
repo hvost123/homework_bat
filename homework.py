@@ -2,11 +2,11 @@ import logging
 import os
 import sys
 import time
-from dotenv import load_dotenv
 from http import HTTPStatus
 
 import requests
 import telegram
+from dotenv import load_dotenv
 
 import exceptions
 
@@ -23,10 +23,10 @@ ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
 HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
 
 
-HOMEWORK_VERDICTS = { 
-    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!', 
-    'reviewing': 'Работа взята на проверку ревьюером.', 
-    'rejected': 'Работа проверена: у ревьюера есть замечания.' 
+HOMEWORK_VERDICTS = {
+    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
+    'reviewing': 'Работа взята на проверку ревьюером.',
+    'rejected': 'Работа проверена: у ревьюера есть замечания.'
 }
 
 
