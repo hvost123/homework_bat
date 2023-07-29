@@ -75,7 +75,7 @@ def get_api_answer(timestamp):
             logging.error(massage_respons)
             raise exceptions.InvalidResponse(massage_respons)
         return homework_statuses.json()
-    except requests.ConnectionError:
+    except requests.RequestException:
         logging.error(massage_error)
         raise exceptions.ConnectApiError(massage_error)
 
