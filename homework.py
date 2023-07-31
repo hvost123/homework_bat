@@ -132,13 +132,14 @@ def main():
             request_new = get_api_answer(timestamp)
             check_response(request_new)
             logging.info('Запрос API прошел проверку.')
-            if not request_new['homeworks']:
+            homeworks = request_new['homeworks']
+            if not homeworks:
                 logging.info('Нет активной работы.')
                 continue
-            get_answer = parse_status(request_new['homeworks'][0])
-            if get_answer != initial_answer:
-                send_message(bot, get_answer)
-                logging.info(f'Отправлен новый статус: {get_answer}')
+            homework = parse_status(homeworks[0])
+            if homework != initial_answer:
+                send_message(bot, homework)
+                logging.info(f'Отправлен новый статус: {homework}')
                 initial_answer = request_new
                 timestamp = request_new.get('current_date')
             else:
