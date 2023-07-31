@@ -33,34 +33,31 @@ HOMEWORK_VERDICTS = {
 def check_tokens():
     """Проверяет доступность переменных окружения."""
     message_error = 'Отсутствие обязательных переменных окружения.'
-    test_constant = all([
+    constants_existence = all([
         PRACTICUM_TOKEN,
         TELEGRAM_TOKEN,
         TELEGRAM_CHAT_ID
     ])
-    if not test_constant:
+    if not constants_existence:
         logging.critical(message_error)
         exit(message_error)
 
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
-    message_send = 'Удачная отправка сообщения в Telegram.'
-    message_error = 'Cбой при отправке сообщения в Telegram.'
     try:
         bot.send_message(
             chat_id=TELEGRAM_CHAT_ID,
             text=message,
         )
     except telegram.TelegramError:
-        logging.error(message_error)
+        logging.error('Cбой при отправке сообщения в Telegram.')
     else:
-        logging.debug(message_send)
+        logging.debug('Удачная отправка сообщения в Telegram.')
 
 
 def get_api_answer(timestamp):
     """Делает запрос к единственному эндпоинту API-сервиса."""
-    message = 'Отправка запроса к API-сервиса.'
     massage_error = 'Неверный ответ.'
     massage_respons = 'Hедоступность эндпоинта.'
     params_request = {
@@ -68,7 +65,7 @@ def get_api_answer(timestamp):
         'headers': HEADERS,
         'params': {'from_date': timestamp},
     }
-    logging.debug(message)
+    logging.debug('Отправка запроса к API-сервиса.')
     try:
         homework_statuses = requests.get(**params_request)
         if homework_statuses.status_code != HTTPStatus.OK:
@@ -83,7 +80,7 @@ def get_api_answer(timestamp):
 def check_response(response):
     """Проверяет ответ API на соответствие документации."""
     error_type_api = 'Ошибка в типе ответа API.'
-    empty_answer_apy = 'Пустой ответ от API.'
+    empty_answer_api = 'Пустой ответ от API.'
     no_list = 'Homeworks не является списком.'
     no_int = 'Current_date не является счислом.'
 
@@ -91,8 +88,8 @@ def check_response(response):
         logging.error(error_type_api)
         raise TypeError(error_type_api)
     if 'homeworks' not in response or 'current_date' not in response:
-        logging.error(empty_answer_apy)
-        raise KeyError(empty_answer_apy)
+        logging.error(empty_answer_api)
+        raise KeyError(empty_answer_api)
     if not isinstance(response['homeworks'], list):
         logging.error(no_list)
         raise TypeError(no_list)
@@ -133,15 +130,15 @@ def main():
     while True:
         try:
             request_new = get_api_answer(timestamp)
-            if check_response(request_new):
-                logging.info('Запрос API прошел проверку.')
-            if not request_new:
+            check_response(request_new)
+            logging.info('Запрос API прошел проверку.')
+            if not request_new['homeworks']:
                 logging.info('Нет активной работы.')
                 continue
-            if request_new != initial_answer:
-                getting_answer = parse_status(request_new['homeworks'][0])
-                send_message(bot, getting_answer)
-                logging.info(f'Отправлен новый статус: {getting_answer}')
+            get_answer = parse_status(request_new['homeworks'][0])
+            if get_answer != initial_answer:
+                send_message(bot, get_answer)
+                logging.info(f'Отправлен новый статус: {get_answer}')
                 initial_answer = request_new
                 timestamp = request_new.get('current_date')
             else:
@@ -159,4 +156,3 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         logging.info('Приложение остановлено пользователем "ctrl + c"')
-        sys.exit()
